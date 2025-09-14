@@ -5,7 +5,9 @@
   "description": "Esta API permite registrar usuários, realizar login, consultar usuários e efetuar transferências de valores entre usuários. O objetivo é servir como base para estudos de testes e automação de APIs.",
   "main": "app.js",
   "scripts": {
-    "test": "mocha test/**/*.test.js --timeout 1000"
+    "test": "mocha test/**/*.test.js --timeout 1000",
+    "test-external": "mocha test/external/**/*.test.js --timeout 1000",
+    "test-controller": "mocha test/controller/**/*.test.js --timeout 1000"
   },
   "author": "",
   "license": "ISC",
