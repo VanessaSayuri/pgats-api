@@ -8,6 +8,7 @@ const app = require('../../app');
 
 //Mock
 const transferService = require('../../service/transferService');
+const { log } = require('console');
 
 
 //Testes
@@ -31,7 +32,6 @@ describe('Transfer Controller', () => {
             const transferServiceMock = sinon.stub(transferService, 'createTransfer');
             transferServiceMock.throws(new Error('Usuário remetente ou destinatário não encontrado.'))
            
-           
 
             const resposta = await request(app)
                 .post('/api/transfers')
@@ -47,6 +47,10 @@ describe('Transfer Controller', () => {
             sinon.restore();
         });
          it('Usando Mocks: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () =>{
+            // Preparando os dados
+                // Carregar o arquivo
+                // Preparar a forma de ignorar os campos dinamicos
+
 
             //Mockar apenas a função transfer do Service
             const transferServiceMock = sinon.stub(transferService, 'createTransfer');
@@ -67,10 +71,21 @@ describe('Transfer Controller', () => {
                     
                 });
             expect(resposta.status).to.equal(201);
-            expect(resposta.body).to.have.property('from', 'julio')
-            expect(resposta.body).to.have.property('to', 'priscila')
-            expect(resposta.body).to.have.property('amount', 100)
 
+            // Validação com um Fixture
+            const respostaEsperada = require('../fixture/respostas/quandoInformoValoresValidosEuTenhoSucessoCom202Created.json');
+
+            delete resposta.body.date;
+            delete respostaEsperada.date;
+
+            expect(resposta.body).to.deep.equal(respostaEsperada);
+            // Um expect para comparar a resposta.body com a string contida no arquivo
+            // expect(resposta.body).to.have.property('from', 'julio')
+            // expect(resposta.body).to.have.property('to', 'priscila')
+            // expect(resposta.body).to.have.property('amount', 100)
+
+            console.log(resposta.body);
+            
 
             //Resetar o mock
             sinon.restore();
