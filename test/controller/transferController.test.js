@@ -8,31 +8,29 @@ const app = require('../../app');
 
 //Mock
 const transferService = require('../../service/transferService');
-const { log } = require('console');
 
 
 //Testes
 describe('Transfer Controller', () => {
     describe('POST /transfers', () => {
+
+        beforeEach(async () =>{
+            const respostaLogin = await request(app)
+                .post('/api/users/login')
+                .send({
+                    username:'julio',
+                    password: '123456'
+                });
+            token = respostaLogin.body.token;
+        })
+
         it('Quando informo remetente e destinatario inexistentes recebo 400', async () =>{
-                //1) Capturar o token
-                const respostaLogin = await request(app)
-                    .post('/api/users/login')
-                    .send({
-                        username:'julio',
-                        password: '123456'
-                    });
-                   
-                    const token = respostaLogin.body.token;
-                
-                    
-         
             const resposta = await request(app)
                 .post('/api/transfers')
                 .set('authorization', `Bearer ${token}`)
                 .send({
                     from: 'julio',
-                    to: 'priscila',
+                    to: 'maria',
                     amount: 100
                 });
             expect(resposta.status).to.equal(400);
@@ -44,17 +42,6 @@ describe('Transfer Controller', () => {
             //Mockar apenas a função transfer do Service
             const transferServiceMock = sinon.stub(transferService, 'createTransfer');
             transferServiceMock.throws(new Error('Usuário remetente ou destinatário não encontrado.'))
-           
-                            //1) Capturar o token
-                const respostaLogin = await request(app)
-                    .post('/api/users/login')
-                    .send({
-                        username:'julio',
-                        password: '123456'
-                    });
-                   
-                    const token = respostaLogin.body.token;
-        
 
             const resposta = await request(app)
                 .post('/api/transfers')
@@ -67,24 +54,12 @@ describe('Transfer Controller', () => {
             expect(resposta.status).to.equal(400);
             expect(resposta.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado.')
 
-            //Resetar o mock
-            sinon.restore();
         });
          it('Usando Mocks: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () =>{
             // Preparando os dados
                 // Carregar o arquivo
                 // Preparar a forma de ignorar os campos dinamicos
             
-                                        //1) Capturar o token
-                const respostaLogin = await request(app)
-                    .post('/api/users/login')
-                    .send({
-                        username:'julio',
-                        password: '123456'
-                    });
-                   
-                    const token = respostaLogin.body.token;
-
 
             //Mockar apenas a função transfer do Service
             const transferServiceMock = sinon.stub(transferService, 'createTransfer');
@@ -121,9 +96,11 @@ describe('Transfer Controller', () => {
 
             //console.log(resposta.body);
             
-
-            //Resetar o mock
-            sinon.restore();
         });
+            //Resetar o mock
+        afterEach(() => {
+            sinon.restore();
+        })
+    
     });
 });
