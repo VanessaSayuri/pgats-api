@@ -15,8 +15,21 @@ const { log } = require('console');
 describe('Transfer Controller', () => {
     describe('POST /transfers', () => {
         it('Quando informo remetente e destinatario inexistentes recebo 400', async () =>{
+                //1) Capturar o token
+                const respostaLogin = await request(app)
+                    .post('/api/users/login')
+                    .send({
+                        username:'julio',
+                        password: '123456'
+                    });
+                   
+                    const token = respostaLogin.body.token;
+                
+                    
+         
             const resposta = await request(app)
                 .post('/api/transfers')
+                .set('authorization', `Bearer ${token}`)
                 .send({
                     from: 'julio',
                     to: 'priscila',
@@ -32,9 +45,20 @@ describe('Transfer Controller', () => {
             const transferServiceMock = sinon.stub(transferService, 'createTransfer');
             transferServiceMock.throws(new Error('Usuário remetente ou destinatário não encontrado.'))
            
+                            //1) Capturar o token
+                const respostaLogin = await request(app)
+                    .post('/api/users/login')
+                    .send({
+                        username:'julio',
+                        password: '123456'
+                    });
+                   
+                    const token = respostaLogin.body.token;
+        
 
             const resposta = await request(app)
                 .post('/api/transfers')
+                .set('authorization', `Bearer ${token}`)
                 .send({
                     from: 'julio',
                     to: 'priscila',
@@ -50,6 +74,16 @@ describe('Transfer Controller', () => {
             // Preparando os dados
                 // Carregar o arquivo
                 // Preparar a forma de ignorar os campos dinamicos
+            
+                                        //1) Capturar o token
+                const respostaLogin = await request(app)
+                    .post('/api/users/login')
+                    .send({
+                        username:'julio',
+                        password: '123456'
+                    });
+                   
+                    const token = respostaLogin.body.token;
 
 
             //Mockar apenas a função transfer do Service
@@ -64,6 +98,7 @@ describe('Transfer Controller', () => {
 
                 const resposta = await request(app)
                 .post('/api/transfers')
+                .set('authorization', `Bearer ${token}`)
                 .send({
                     from: 'julio',
                     to: 'priscila',
@@ -84,7 +119,7 @@ describe('Transfer Controller', () => {
             // expect(resposta.body).to.have.property('to', 'priscila')
             // expect(resposta.body).to.have.property('amount', 100)
 
-            console.log(resposta.body);
+            //console.log(resposta.body);
             
 
             //Resetar o mock
